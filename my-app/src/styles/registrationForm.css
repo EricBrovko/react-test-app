@@ -1,0 +1,15 @@
+.email-field {
+  width: 300px;
+  height: 30px;
+  display: block;
+  border-radius: 4px;
+  margin: 10px;
+}
+
+.submit-btn {
+  width: 300px;
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  margin: 10px;
+}
