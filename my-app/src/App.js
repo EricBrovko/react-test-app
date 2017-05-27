@@ -1,34 +1,73 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './styles/App.css';
 
-import Header           from './components/Header';
-import Dropdown         from './components/Dropdown';
-import RegistrationForm from './components/RegistrationForm';
+// import Header           from './components/Header';
+// import Dropdown         from './components/Dropdown';
+// import RegistrationForm from './components/RegistrationForm';
 // mockData
-import MenuList         from './mockData/menuList';
+// import MenuList         from './mockData/menuList';
 
-
+import { getTracks } from './actions/tracks';
 
 class App extends Component {
+  addTrack() {
+    this.props.onAddTrack(this.trackInput.value);
+  }
+
+  findTrack() {
+    console.log("find track", this.searchInput.value);
+    this.props.onFindTrack(this.searchInput.value);
+  }
+
+
   render() {
     return (
+      // console.log(this.props.tracks),
       <div>
         <div>
-          <Header items={ MenuList }/>
-          <Dropdown />
+          <input type="text" ref={((input) => { this.trackInput = input })} />
+          <button onClick={this.addTrack.bind(this)}>Add track</button>
         </div>
-        <hr />
-        <div className="container-form">
-          <RegistrationForm />
+        <div>
+          <input type="text" ref={((input) => { this.searchInput = input })} />
+          <button onClick={this.findTrack.bind(this)}>Find track</button>
         </div>
+        <div>
+          <button onClick={this.props.onGetTracks}>Get tracks</button>
+        </div>
+        <ul>
+          {
+            this.props.tracks.map((track, index) =>
+            <li key={index}>{track.name}</li>
+          )}
+        </ul>
       </div>
-
-
     );
   }
 }
 
-export default App;
+export default connect(
+    state => ({
+      tracks: state.tracks.filter(track =>
+        track.name.includes(state.filterTracks))      
+    }),
+    dispatch => ({
+      onAddTrack: (name) => {
+        const payload = {
+          id: Date.now,
+          name
+        }
+        dispatch({ type: 'ADD_TRACK', payload });
+      },
+      onFindTrack: (name) => {
+        dispatch({ type: 'FIND_TRACK', payload: name });
+      },
+      onGetTracks: () => {
+        dispatch(getTracks());
+      }
+    })
+  )(App);
 
 
 
@@ -40,13 +79,30 @@ export default App;
 
 
 
+// class App extends Component {
+//   render() {
+//     return (
+//       <div>
+//         <div>
+//           <Header items={ MenuList }/>
+//           <Dropdown />
 
+
+//         </div>
+//         <hr />
+//         <div className="container-form">
+//           <RegistrationForm />
+//         </div>
+//       </div>
+//     );
+//   }
+// }
 
 
 
 
 // import React, { Component } from 'react';
-// import React from 'react';
+// // import React from 'react';
 // import {
 //   BrowserRouter as Router,
 //   Route,
@@ -54,26 +110,26 @@ export default App;
 // } from 'react-router-dom';
 
 
-//  Working variant
+//  // Working variant
 // const Home = () => (
 //   <div>
 //     <h2>Home</h2>
 //   </div>
 // );
-//
+
 // const About = () => (
-//
+
 //   <div>
 //     <h2>About</h2>
 //   </div>
 // );
-//
+
 // const Topic = ({ match }) => (
 //   <div>
 //     <h3>{match.params.topicId}</h3>
 //   </div>
 // );
-//
+
 // const Topics = ({ match }) => (
 //   <div>
 //     <h2>Topics</h2>
@@ -94,14 +150,14 @@ export default App;
 //         </Link>
 //       </li>
 //     </ul>
-//
+
 //     <Route path={`${match.url}/:topicId`} component={Topic}/>
 //     <Route exact path={match.url} render={() => (
 //       <h3>Please select a topic.</h3>
 //     )}/>
 //   </div>
 // );
-//
+
 // const BasicExample = () => (
 //   <Router>
 //     <div>
@@ -110,9 +166,9 @@ export default App;
 //         <li><Link to="/about">About</Link></li>
 //         <li><Link to="/topics">Topics</Link></li>
 //       </ul>
-//
+
 //       <hr/>
-//
+
 //       <Route exact path="/" component={Home}/>
 //       <Route path="/about" component={About}/>
 //       <Route path="/topics" component={Topics}/>
